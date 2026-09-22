@@ -12,7 +12,7 @@
 :root{
   --ground:#EEF2F1; --paper:#FFFFFF; --ink:#16201E; --muted:#5B6A67; --line:#D3DCDA;
   --accent:#1D5E8A; --accent-ink:#FFFFFF;
-  --rain:#2F6FD0; --rain-bg:#DCE8FA;
+  --rain:#2F6FD0; --rain-bg:#DCE8FA; --dry:#C77700;
   --hot:#C2521B; --cold:#2D7F99;
   --good:#2E7D4F; --good-bg:#DDF0E3; --warn:#9A6A00; --warn-bg:#FBEFC9; --bad:#B3261E; --bad-bg:#F9DEDB;
   --track:#8FA3A0;
@@ -24,7 +24,7 @@
   :root:not([data-theme="light"]){
     --ground:#0F1514; --paper:#18201F; --ink:#E6EDEB; --muted:#98A8A5; --line:#2C3836;
     --accent:#6DAEDB; --accent-ink:#0F1514;
-    --rain:#7FAEF5; --rain-bg:#1C2B44; --hot:#F08A55; --cold:#6CC3DD;
+    --rain:#7FAEF5; --rain-bg:#1C2B44; --dry:#F0A935; --hot:#F08A55; --cold:#6CC3DD;
     --good:#7FD19E; --good-bg:#16332A; --warn:#E9C15A; --warn-bg:#3A3015; --bad:#F2978F; --bad-bg:#43201D;
     --track:#4E5F5C;
   }
@@ -32,7 +32,7 @@
 :root[data-theme="dark"]{
   --ground:#0F1514; --paper:#18201F; --ink:#E6EDEB; --muted:#98A8A5; --line:#2C3836;
   --accent:#6DAEDB; --accent-ink:#0F1514;
-  --rain:#7FAEF5; --rain-bg:#1C2B44; --hot:#F08A55; --cold:#6CC3DD;
+  --rain:#7FAEF5; --rain-bg:#1C2B44; --dry:#F0A935; --hot:#F08A55; --cold:#6CC3DD;
   --good:#7FD19E; --good-bg:#16332A; --warn:#E9C15A; --warn-bg:#3A3015; --bad:#F2978F; --bad-bg:#43201D;
   --track:#4E5F5C;
 }
@@ -360,7 +360,7 @@ function drawMap(res){
   res.forEach(r=>{
     const it = r.it, stop = it.kind==='stop';
     const ti = Math.min(tr.length-1, Math.round(it.km/2)), cx = X(tr[ti][1]), cy = Y(tr[ti][0]);
-    const fill = r.h<0 ? 'var(--paper)' : r.sum>=1 ? 'var(--rain)' : 'var(--accent)', stroke = r.h<0 ? 'var(--muted)' : 'var(--paper)';
+    const fill = r.h<0 ? 'var(--paper)' : r.sum>=1 ? 'var(--rain)' : 'var(--dry)', stroke = r.h<0 ? 'var(--muted)' : 'var(--paper)';
     g += stop ? `<rect x="${(cx-6).toFixed(1)}" y="${(cy-6).toFixed(1)}" width="12" height="12" fill="${fill}" stroke="var(--ink)" stroke-width="1.5"><title>Stage end · km ${Math.round(it.km)} · ${esc(it.name)}</title></rect>`
               : `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r.sum>=1?6.5:5}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"><title>km ${Math.round(it.km)} · ${esc(it.name)}</title></circle>`;
     if (stop || it.km===0 || it.kind==='finish'){
@@ -369,9 +369,9 @@ function drawMap(res){
     }
   });
   g += `<g font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--muted)">
-    <rect x="42" y="${Hh-24}" width="11" height="11" fill="var(--accent)" stroke="var(--ink)"/><text x="58" y="${Hh-14}">stage end</text>
+    <rect x="42" y="${Hh-24}" width="11" height="11" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5"/><text x="58" y="${Hh-14}">stage end</text>
     <circle cx="130" cy="${Hh-18}" r="5" fill="var(--rain)"/><text x="140" y="${Hh-14}">rain ≥ 1 mm near arrival</text>
-    <circle cx="290" cy="${Hh-18}" r="5" fill="var(--accent)"/><text x="300" y="${Hh-14}">dry</text>
+    <circle cx="290" cy="${Hh-18}" r="5" fill="var(--dry)"/><text x="300" y="${Hh-14}">dry</text>
     <circle cx="336" cy="${Hh-18}" r="5" fill="var(--paper)" stroke="var(--muted)"/><text x="346" y="${Hh-14}">no forecast</text></g>`;
   const m = $('map'); m.setAttribute('viewBox', `0 0 ${W} ${(Hh+10).toFixed(0)}`); m.innerHTML = g;
 }
